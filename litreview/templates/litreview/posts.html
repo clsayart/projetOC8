@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'litreview/nav.html' %}
+    <h2>Litreview</h2>
+    <div class="grid-container">
+        {% for ticket in tickets %}
+            <div class="post">
+               <a href=""></a>
+                    <h4>Billet : {{ ticket.title }}</h4>
+                <a href="{% url 'ticket_delete' ticket.id %}">[supprimer]</a>
+                <a href="{% url 'ticket_update' ticket.id %}">[modifier]</a>
+
+                <p>Description: {{ ticket.description }}</p>
+                <p>Date de création : {{ ticket.date_created }}</p>
+
+
+                {% if ticket.image %}
+   <img src="{{ ticket.image.url }}">
+   {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+        <p>
+            Mes reviews sont :
+         {% for review in reviews %}
+         {{ review.headline }}, {{ review.id }}, {{ review.body }}
+           {% endfor %}
+
+        </p>
+{% endblock content %}

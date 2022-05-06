@@ -1,0 +1,13 @@
+{% include 'litreview/nav.html' %}
+<h1>Suivre un user</h1>
+{% for user in users %}
+<p>Etes-vous sûr de vouloir suivre ce user : {{ user.username }} ?</p>
+
+<form method="post" action="{% url 'follow_confirmed' user.id %}">
+        {{ follow_form.as_p }}
+        {% csrf_token %}
+        <button type="submit" >OUI</button>
+    </form>
+
+{% endfor %}
+

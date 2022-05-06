@@ -1,0 +1,19 @@
+
+{% block content %}
+<div id="ticket_snippet">
+<h3>TICKET</h3>
+<ul>
+    <li>Title : {{ post.title }}</li>
+    <li>Description : {{ post.description }}</li>
+    <li>User : {{ post.user }}</li>
+    <li>Time created : {{ post.time_created }}</li>
+
+
+</ul>
+    {% if post.image %}
+<img src="{{ post.image.url }}">
+     {% endif %}
+
+
+</div>
+{% endblock content %}

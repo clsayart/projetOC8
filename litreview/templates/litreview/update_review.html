@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'litreview/nav.html' %}
+    <h2>Updater un review</h2>
+    <form method="post" enctype="multipart/form-data">
+        {{ review_form.as_p }}
+        {% csrf_token %}
+        <button type="submit" >Update</button>
+    </form>
+{% endblock content %}

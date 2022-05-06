@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'litreview/nav.html' %}
+    <h3>Search Users to Follow</h3>
+
+    <form method=POST >
+        <input type="text" placeholder="Search..." name="searched">
+        {% csrf_token %}
+        <button type="submit" >Publier</button>
+    </form>
+<h3>Abonnements</h3>
+<div class="following">
+{% for follow in following %}
+    <h4>{{ follow }}</h4>
+    <a href="{% url 'follow_delete' follow.id %}">supprimer</a>
+{% endfor %}
+    </div>
+<h3>Abonnés</h3>
+<div class="followed">
+{% for follow in followed %}
+    <h4>{{ follow }}</h4>
+{% endfor %}
+    </div>
+{% endblock content %}
+
+

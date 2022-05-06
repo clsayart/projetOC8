@@ -1,0 +1,12 @@
+p {
+    color: red;
+
+}
+
+#review_snippet {
+border: solid;
+}
+
+.followed,.following > * {
+border: solid;
+}

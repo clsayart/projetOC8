@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'litreview/nav.html' %}
+ <p>Vous êtes connecté à Litreview!</p>
+    <p><a href="{% url 'ticket_create' %}">Écrire un ticket</a></p>
+    <p><a href="{% url 'review_create' %}">Écrire un review</a></p>
+{% for post in posts %}
+    {% if post.content_type == 'TICKET' %}
+        {% include 'litreview/ticket_snippet.html' %}
+    {% elif post.content_type == 'REVIEW' %}
+        {% include 'litreview/review_snippet.html' %}
+{% endif %}
+{% endfor %}
+
+{% endblock content %}

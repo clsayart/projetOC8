@@ -1,0 +1,16 @@
+
+{% block content %}
+
+
+<h3>REVIEW</h3>
+<ul>
+ <li>Ticket related : {{ post.ticket }}</li>
+    <li>Headline : {{ post.headline }}</li>
+ <li>Rating : {{ post.rating }}</li>
+    <li>Contenu : {{ post.body }}</li>
+    <li>User : {{ post.user }}</li>
+<li>Time created : {{ post.time_created }}</li>
+
+</ul>
+
+{% endblock content %}
