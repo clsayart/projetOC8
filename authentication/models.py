@@ -10,4 +10,6 @@ class User(AbstractUser):
         (CREATOR, 'Créateur'),
         (SUBSCRIBER, 'Abonné'),
     )
-    role = models.CharField(max_length=30, choices=ROLE_CHOICES, verbose_name='Rôle')
+    role = models.CharField(max_length=30,
+                            choices=ROLE_CHOICES,
+                            verbose_name='Rôle')

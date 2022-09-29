@@ -11,16 +11,31 @@
 <h3>Abonnements</h3>
 <div class="following">
 {% for follow in following %}
-    <h4>{{ follow }}</h4>
-    <a href="{% url 'follow_delete' follow.id %}">supprimer</a>
+      <table>
+  <tr>
+    <td>{{ follow.followed_user }}</td>
+      <td><a href="{% url 'follow_delete' follow.id %}">supprimer</a></td>
+
+    </tr>
+        </table>
+
 {% endfor %}
     </div>
 <h3>Abonnés</h3>
 <div class="followed">
+
 {% for follow in followed %}
-    <h4>{{ follow }}</h4>
+
+      <table>
+  <tr>
+    <td>{{ follow.user }}</td>
+
+    </tr>
+        </table>
 {% endfor %}
     </div>
+
+
 {% endblock content %}
 
 

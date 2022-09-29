@@ -9,11 +9,11 @@ from . import forms, models
 
 
 def posts(request):
-    reviews = models.Review.objects.all()
-    tickets = models.Ticket.objects.all()
-    print("hihi")
+    reviews = models.Review.objects.filter(user=request.user)
+    tickets = models.Ticket.objects.filter(user=request.user)
     return render(request, 'litreview/posts.html', {'reviews': reviews,
-                                                    'tickets': tickets})
+                                                    'tickets': tickets,
+                                                    'max_rating': range(5)})
 
 
 @login_required
@@ -87,17 +87,16 @@ def review_upload_2(request, test_ticket_id):
 def follows_searched(request):
     if request.method == 'POST':
         searched = request.POST.get('searched')
-        # if searched else ??????
 
         users = User.objects.filter(username__contains=searched)
-        print('searched', searched, 'users', users)
+        # print('searched', searched, 'users', users)
         return render(request, 'litreview/confirm_follow.html', {'searched': searched,
                                                                  'users': users,
                                                                  })
     user_en_ligne = User.objects.get(id=request.user.id)
     following = user_en_ligne.following.all()
     followed = user_en_ligne.followed_by.all()
-    print('u', user_en_ligne, 'following', following, 'followed', followed)
+    # print('u', user_en_ligne, 'following', following, 'followed', followed)
     return render(request, 'litreview/follows.html', {'following': following,
                                                       'followed': followed,
                                                       })
@@ -106,10 +105,10 @@ def follows_searched(request):
 @login_required
 def follows(request, followed_user_id):
     if request.method == 'POST':
-        print('method post')
+        # print('method post')
         follow_form = forms.FollowForm(request.POST)
         if follow_form.is_valid():
-            print('is valid')
+            # print('is valid')
             follow = follow_form.save(commit=False)
             follow.user = request.user
             follow.followed_user = User.objects.get(id=followed_user_id)
@@ -121,7 +120,7 @@ def follows(request, followed_user_id):
 
 def review_update(request, review_id):
     review = get_object_or_404(Review, id=review_id)
-    print('review', review)
+    # print('review', review)
     if request.method == 'POST':
         review_form = forms.ReviewForm(request.POST, instance=review)
         if review_form.is_valid():
@@ -136,7 +135,7 @@ def review_update(request, review_id):
 
 def ticket_update(request, ticket_id):
     ticket = get_object_or_404(Ticket, id=ticket_id)
-    print('ticket', ticket.id)
+    # print('ticket', ticket.id)
     if request.method == 'POST':
         ticket_form = forms.TicketForm(request.POST, request.FILES, instance=ticket)
         if ticket_form.is_valid():
@@ -182,32 +181,71 @@ def follow_delete(request, follow_id):
     return render(request, 'litreview/delete_follow.html', {'follow': follow})
 
 
-def get_users_viewable_reviews(user_id):
-    reviews = models.Review.objects.filter(user=user_id)
-    print('reviews', reviews)
-    return reviews
+def get_users_viewable_reviews1(user_id):
+    reviews1 = models.Review.objects.filter(user=user_id)
+    print("reviews du user", reviews1)
+    return reviews1
 
 
-def get_users_viewable_tickets(user_id):
+def get_users_viewable_reviews2(user_id):
+    following = User.objects.get(id=user_id.id).following.all()
+    print("following", following)
+    followed_users = []
+    for i in following:
+        followed_users.append(i.followed_user)
+    print("followed_users", followed_users)
+    reviews2 = Review.objects.filter(user__in=followed_users)
+    print("reviews des follows", reviews2)
+    return reviews2
+
+
+def get_users_viewable_reviews3(user_id):
+    #REVIEWS POUR LES TICKETS DU USER MEME SI USER NE LES SUIT PAS
     tickets = models.Ticket.objects.filter(user=user_id)
-    print('tickets', tickets)
-    return tickets
+    print("tickets du user", tickets)
+    reviews3 = Review.objects.filter(ticket__in=tickets)
+    print("reviews aux tickets du user", reviews3)
+    return reviews3
+
+
+def get_users_viewable_tickets1(user_id):
+    # TIKCETS DU USER
+    tickets1 = models.Ticket.objects.filter(user=user_id)
+    print("tickets du user", tickets1)
+    return tickets1
+
+
+def get_users_viewable_tickets2(user_id):
+    # TICKETS DES USERS QU'IL FOLLOW
+    following = User.objects.get(id=user_id.id).following.all()
+    followed_users = []
+    for i in following:
+        followed_users.append(i.followed_user)
+    tickets2 = Ticket.objects.filter(user__in=followed_users)
+    print("tickets du follow", tickets2)
+    return tickets2
 
 
 def feed(request):
-    reviews = get_users_viewable_reviews(request.user)
+    reviews1 = get_users_viewable_reviews1(request.user)
+    reviews2 = get_users_viewable_reviews2(request.user)
+    reviews3 = get_users_viewable_reviews2(request.user)
     # returns queryset of reviews
-    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+    reviews1 = reviews1.annotate(content_type=Value('REVIEW', CharField()))
+    reviews2 = reviews2.annotate(content_type=Value('REVIEW', CharField()))
+    reviews3 = reviews3.annotate(content_type=Value('REVIEW', CharField()))
 
-    tickets = get_users_viewable_tickets(request.user)
+    tickets1 = get_users_viewable_tickets1(request.user)
+    tickets2 = get_users_viewable_tickets2(request.user)
     # returns queryset of tickets
-    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+    tickets1 = tickets1.annotate(content_type=Value('TICKET', CharField()))
+    tickets2 = tickets2.annotate(content_type=Value('TICKET', CharField()))
 
     # combine and sort the two types of posts
     posts = sorted(
-        chain(reviews, tickets),
+        chain(reviews1, reviews2, reviews3, tickets1, tickets2),
         key=lambda post: post.time_created,
         reverse=True
     )
-    print('posts', posts)
-    return render(request, 'litreview/feed.html', context={'posts': posts})
+    # print('posts', posts)
+    return render(request, 'litreview/feed.html', context={'posts': posts, 'max_rating': range(5)})

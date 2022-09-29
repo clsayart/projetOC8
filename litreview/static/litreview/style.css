@@ -1,12 +1,45 @@
-p {
-    color: red;
 
-}
+/*
 
 #review_snippet {
 border: solid;
 }
+*/
 
-.followed,.following > * {
+/*.followed,.following > * {
 border: solid;
+}*/
+
+.container-feed{
+display:flex;
+justify-content:space-between;
 }
+
+
+.card img {
+  display: block;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table, td {
+  border: 1px solid;
+  border-collapse: collapse;
+}
+
+table {
+width: 80%;
+
+}
+
+.checked {
+  color: orange;
+}
+
+
+
+/* ul#youelementId li{
+  display: inline-block;
+  }*/
+

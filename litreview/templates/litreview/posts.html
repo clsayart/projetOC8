@@ -1,31 +1,43 @@
 {% extends 'base.html' %}
 {% block content %}
 {% include 'litreview/nav.html' %}
-    <h2>Litreview</h2>
-    <div class="grid-container">
-        {% for ticket in tickets %}
-            <div class="post">
-               <a href=""></a>
-                    <h4>Billet : {{ ticket.title }}</h4>
-                <a href="{% url 'ticket_delete' ticket.id %}">[supprimer]</a>
-                <a href="{% url 'ticket_update' ticket.id %}">[modifier]</a>
 
-                <p>Description: {{ ticket.description }}</p>
-                <p>Date de création : {{ ticket.date_created }}</p>
+{% for ticket in tickets %}
+<div class="card text-center mb-3">
+     {% if ticket.image %}
+<img src="{{ ticket.image.url }}"class="card-img-top img-thumbnail img-size">
+     {% endif %}
+  <div class="card-body">
+    <h5 class="card-title">TICKET : {{ ticket.title }}</h5>
+    <p class="card-text">Description : {{ ticket.description }}</p>
+    <p class="card-text"><small class="text-muted">Created by {{ ticket.user }} - {{ ticket.time_created }}</small></p>
+      <a href="{% url 'ticket_delete' ticket.id %}">[supprimer]</a>
+      <a href="{% url 'ticket_update' ticket.id %}">[modifier]</a>
+  </div>
+</div>
+{% endfor %}
 
 
-                {% if ticket.image %}
-   <img src="{{ ticket.image.url }}">
-   {% endif %}
-            </div>
-        {% endfor %}
-    </div>
+{% for review in reviews %}
+<div class="card text-center mb-3">
+     {% if review.image %}
+<img src="{{ review.image.url }}" class="card-img-top img-thumbnail img-size">
+     {% endif %}
+  <div class="card-body">
+    <h5 class="card-title">REVIEW : {{ review.headline }}</h5>
+    <p class="card-text">Contenu : {{ review.body }} Rating : {{ review.rating }}</p>
+      {% for i in max_rating %}
+        {% if i < review.rating %}
+            <span class="fa fa-star checked"></span>
+        {% else %}
+            <span class="fa fa-star"></span>
+        {% endif %}
+      {% endfor %}
 
-        <p>
-            Mes reviews sont :
-         {% for review in reviews %}
-         {{ review.headline }}, {{ review.id }}, {{ review.body }}
-           {% endfor %}
+    <p class="card-text"><small class="text-muted">Created by {{ review.user }} - {{ review.time_created }} Ticket related : {{ review.ticket }}</small></p>
+  </div>
+</div>
+{% endfor %}
 
-        </p>
+
 {% endblock content %}

@@ -1,10 +1,25 @@
 {% block content %}
 
-    <div class="navbar">
-                <a href="{% url 'feed' %}">Flux</a>
-                <a href="{% url 'posts' %}">Posts</a>
-                <a href="{% url 'follows' %}">Abonnements</a>
-                <a href="{% url 'logout' %}">Log out</a>
+<nav class="navbar navbar-expand-lg bg-light">
+  <div class="container-fluid">
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+            <li class="nav-item"><a class="nav-link" href="{% url 'feed' %}">Flux</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'posts' %}">Posts</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'follows' %}">Abonnements</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Log out</a></li>
+
+
+
+      </ul>
+
     </div>
+  </div>
+</nav>
 
 {% endblock content %}

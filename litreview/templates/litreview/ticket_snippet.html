@@ -1,19 +1,11 @@
-
-{% block content %}
-<div id="ticket_snippet">
-<h3>TICKET</h3>
-<ul>
-    <li>Title : {{ post.title }}</li>
-    <li>Description : {{ post.description }}</li>
-    <li>User : {{ post.user }}</li>
-    <li>Time created : {{ post.time_created }}</li>
-
-
-</ul>
-    {% if post.image %}
-<img src="{{ post.image.url }}">
+<div class="card text-center mb-3">
+     {% if post.image %}
+<img src="{{ post.image.url }}"class="card-img-top img-thumbnail img-size">
      {% endif %}
-
-
+  <div class="card-body">
+    <h5 class="card-title">TICKET : {{ post.title }}</h5>
+    <p class="card-text">Description : {{ post.description }}</p>
+    <p class="card-text"><small class="text-muted">Created by {{ post.user }} - {{ post.time_created }}</small></p>
+      <p><a href="{% url 'review_create_2' post.id %}">Écrire un review</a></p>
+  </div>
 </div>
-{% endblock content %}

@@ -1,16 +1,23 @@
+<div class="card text-center mb-3">
+     {% if post.image %}
+    <div>
+<img
+src="{{ post.image.url }}" class="card-img-top img-thumbnail img-size">
+        </div>
+     {% endif %}
 
-{% block content %}
+  <div class="card-body">
+    <h5 class="card-title">REVIEW : {{ post.headline }}</h5>
+    <p class="card-text">Contenu : {{ post.body }}</p>
+      {% for i in max_rating %}
+        {% if i < post.rating %}
+            <span class="fa fa-star checked"></span>
+        {% else %}
+            <span class="fa fa-star"></span>
+        {% endif %}
+      {% endfor %}
+    <p class="card-text"><small class="text-muted">Created by {{ post.user }} - {{ post.time_created }} Ticket related : {{ post.ticket }}</small></p>
+  </div>
+</div>
 
 
-<h3>REVIEW</h3>
-<ul>
- <li>Ticket related : {{ post.ticket }}</li>
-    <li>Headline : {{ post.headline }}</li>
- <li>Rating : {{ post.rating }}</li>
-    <li>Contenu : {{ post.body }}</li>
-    <li>User : {{ post.user }}</li>
-<li>Time created : {{ post.time_created }}</li>
-
-</ul>
-
-{% endblock content %}
