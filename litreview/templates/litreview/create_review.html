@@ -5,7 +5,11 @@
  <h2>Écrire un review</h2>
 <div class="form-group">
     <form method="post" enctype="multipart/form-data">
+        <p>TICKET</p>
         {{ ticket_form.as_p }}
+        <br>
+        <br>
+        <p>REVIEW</p>
         {{ review_form.as_p }}
         {% csrf_token %}
         <button type="submit" >Publier</button>

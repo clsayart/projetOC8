@@ -16,7 +16,8 @@ class Ticket(models.Model):
 
 
 class Review(models.Model):
-    ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE, blank=True, null=True)
+    ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE,
+                               blank=True, null=True)
     rating = models.PositiveSmallIntegerField(
         # validates that rating must be between 0 and 5
         validators=[MinValueValidator(0), MaxValueValidator(5)])
@@ -32,9 +33,11 @@ class Review(models.Model):
 
 class UserFollows(models.Model):
     user = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='following', blank=True, null=True)
+        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name='following', blank=True, null=True)
     followed_user = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='followed_by', blank=True, null=True)
+        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name='followed_by', blank=True, null=True)
 
     class Meta:
         unique_together = ('user', 'followed_user',)

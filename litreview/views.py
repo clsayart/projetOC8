@@ -90,9 +90,10 @@ def follows_searched(request):
 
         users = User.objects.filter(username__contains=searched)
         # print('searched', searched, 'users', users)
-        return render(request, 'litreview/confirm_follow.html', {'searched': searched,
-                                                                 'users': users,
-                                                                 })
+        return render(request, 'litreview/confirm_follow.html',
+                      {'searched': searched,
+                       'users': users,
+                       })
     user_en_ligne = User.objects.get(id=request.user.id)
     following = user_en_ligne.following.all()
     followed = user_en_ligne.followed_by.all()
@@ -137,7 +138,8 @@ def ticket_update(request, ticket_id):
     ticket = get_object_or_404(Ticket, id=ticket_id)
     # print('ticket', ticket.id)
     if request.method == 'POST':
-        ticket_form = forms.TicketForm(request.POST, request.FILES, instance=ticket)
+        ticket_form = forms.TicketForm(request.POST, request.FILES,
+                                       instance=ticket)
         if ticket_form.is_valid():
             ticket_form.save()
             return redirect('posts')
@@ -200,7 +202,7 @@ def get_users_viewable_reviews2(user_id):
 
 
 def get_users_viewable_reviews3(user_id):
-    #REVIEWS POUR LES TICKETS DU USER MEME SI USER NE LES SUIT PAS
+    # REVIEWS POUR LES TICKETS DU USER MEME SI USER NE LES SUIT PAS
     tickets = models.Ticket.objects.filter(user=user_id)
     print("tickets du user", tickets)
     reviews3 = Review.objects.filter(ticket__in=tickets)
@@ -209,7 +211,7 @@ def get_users_viewable_reviews3(user_id):
 
 
 def get_users_viewable_tickets1(user_id):
-    # TIKCETS DU USER
+    # TICKETS DU USER
     tickets1 = models.Ticket.objects.filter(user=user_id)
     print("tickets du user", tickets1)
     return tickets1
@@ -248,4 +250,5 @@ def feed(request):
         reverse=True
     )
     # print('posts', posts)
-    return render(request, 'litreview/feed.html', context={'posts': posts, 'max_rating': range(5)})
+    return render(request, 'litreview/feed.html',
+                  context={'posts': posts, 'max_rating': range(5)})
