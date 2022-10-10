@@ -1,3 +1,5 @@
+{% extends 'base.html' %}
+{% block content %}
 {% include 'litreview/nav.html' %}
 <h1>Suivre un user</h1>
 {% for user in users %}
@@ -10,4 +12,5 @@
     </form>
 
 {% endfor %}
+{% endblock content %}
 

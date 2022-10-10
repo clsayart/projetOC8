@@ -1,4 +1,5 @@
-{% include 'litreview/nav.html' %}
+{% extends 'base.html' %}
+{% block content %}{% include 'litreview/nav.html' %}
 <h1>Supprimer le groupe</h1>
 
 <p>Etes-vous sûr de vouloir supprimer le ticket : {{ ticket.title }} ?</p>
@@ -7,3 +8,5 @@
 {% csrf_token %}
 <input type="submit" value="Supprimer">
 </form>
+
+{% endblock content %}

@@ -35,6 +35,8 @@
       {% endfor %}
 
     <p class="card-text"><small class="text-muted">Created by {{ review.user }} - {{ review.time_created }} Ticket related : {{ review.ticket }}</small></p>
+      <a href="{% url 'review_delete' review.id %}">[supprimer]</a>
+      <a href="{% url 'review_update' review.id %}">[modifier]</a>
   </div>
 </div>
 {% endfor %}

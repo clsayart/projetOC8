@@ -121,7 +121,9 @@ def follows(request, followed_user_id):
 
 def review_update(request, review_id):
     review = get_object_or_404(Review, id=review_id)
-    # print('review', review)
+    ticket = get_object_or_404(Ticket, id=review.ticket.id)
+    print('review', review)
+    print('ticket', ticket)
     if request.method == 'POST':
         review_form = forms.ReviewForm(request.POST, instance=review)
         if review_form.is_valid():
@@ -131,7 +133,8 @@ def review_update(request, review_id):
         review_form = forms.ReviewForm(instance=review)
     return render(request,
                   'litreview/update_review.html',
-                  {'review_form': review_form})
+                  {'review_form': review_form,
+                   'ticket': ticket})
 
 
 def ticket_update(request, ticket_id):
@@ -204,7 +207,7 @@ def get_users_viewable_reviews2(user_id):
 def get_users_viewable_reviews3(user_id):
     # REVIEWS POUR LES TICKETS DU USER MEME SI USER NE LES SUIT PAS
     tickets = models.Ticket.objects.filter(user=user_id)
-    print("tickets du user", tickets)
+    print("tickets du user3", tickets)
     reviews3 = Review.objects.filter(ticket__in=tickets)
     print("reviews aux tickets du user", reviews3)
     return reviews3
@@ -231,7 +234,7 @@ def get_users_viewable_tickets2(user_id):
 def feed(request):
     reviews1 = get_users_viewable_reviews1(request.user)
     reviews2 = get_users_viewable_reviews2(request.user)
-    reviews3 = get_users_viewable_reviews2(request.user)
+    reviews3 = get_users_viewable_reviews3(request.user)
     # returns queryset of reviews
     reviews1 = reviews1.annotate(content_type=Value('REVIEW', CharField()))
     reviews2 = reviews2.annotate(content_type=Value('REVIEW', CharField()))
