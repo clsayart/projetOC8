@@ -8,7 +8,8 @@
         {% csrf_token %}
         <button type="submit" >Publier</button>
     </form>
-<h3>Abonnements</h3>
+<h3>Abonnements de {{ user_en_ligne.username }}</h3>
+<p></p>
 <div class="following">
 {% for follow in following %}
       <table>
@@ -21,7 +22,7 @@
 
 {% endfor %}
     </div>
-<h3>Abonnés</h3>
+<h3>Abonnés à {{ user_en_ligne.username }}</h3>
 <div class="followed">
 
 {% for follow in followed %}

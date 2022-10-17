@@ -100,6 +100,7 @@ def follows_searched(request):
     # print('u', user_en_ligne, 'following', following, 'followed', followed)
     return render(request, 'litreview/follows.html', {'following': following,
                                                       'followed': followed,
+                                                      'user_en_ligne': user_en_ligne
                                                       })
 
 
