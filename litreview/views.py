@@ -123,8 +123,8 @@ def follows(request, followed_user_id):
 def review_update(request, review_id):
     review = get_object_or_404(Review, id=review_id)
     ticket = get_object_or_404(Ticket, id=review.ticket.id)
-    print('review', review)
-    print('ticket', ticket)
+    # print('review', review)
+    # print('ticket', ticket)
     if request.method == 'POST':
         review_form = forms.ReviewForm(request.POST, instance=review)
         if review_form.is_valid():
@@ -195,11 +195,11 @@ def get_users_viewable_reviews1(user_id):
 
 def get_users_viewable_reviews2(user_id):
     following = User.objects.get(id=user_id.id).following.all()
-    print("following", following)
+    # print("following", following)
     followed_users = []
     for i in following:
         followed_users.append(i.followed_user)
-    print("followed_users", followed_users)
+    # print("followed_users", followed_users)
     reviews2 = Review.objects.filter(user__in=followed_users)
     print("reviews des follows", reviews2)
     return reviews2
@@ -208,7 +208,7 @@ def get_users_viewable_reviews2(user_id):
 def get_users_viewable_reviews3(user_id):
     # REVIEWS POUR LES TICKETS DU USER MEME SI USER NE LES SUIT PAS
     tickets = models.Ticket.objects.filter(user=user_id)
-    print("tickets du user3", tickets)
+    # print("tickets du user3", tickets)
     reviews3 = Review.objects.filter(ticket__in=tickets)
     print("reviews aux tickets du user", reviews3)
     return reviews3
