@@ -4,9 +4,12 @@
     {% if form.errors %}
         {{ form.errors }}
     {% endif %}
+<div class="form-group">
+
     <form method="post">
         {{ form.as_p }}
         {% csrf_token %}
         <button type="submit" >S’inscrire</button>
     </form>
+    </div>
 {% endblock content %}

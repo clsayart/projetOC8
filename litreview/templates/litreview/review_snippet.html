@@ -1,3 +1,5 @@
+
+
 <div class="card text-center mb-3">
      {% if post.image %}
     <div>
@@ -17,6 +19,18 @@ src="{{ post.image.url }}" class="card-img-top img-thumbnail img-size">
         {% endif %}
       {% endfor %}
     <p class="card-text"><small class="text-muted">Created by {{ post.user }} - {{ post.time_created }} Ticket related : {{ post.ticket }}</small></p>
+  </div>
+
+     {% if post.ticket.image %}
+<img src="{{ post.image.url }}"class="card-img-top img-thumbnail img-size">
+     {% endif %}
+  <div class="card-body">
+    <h5 class="card-title">EN REPONSE A CE TICKET : {{ post.ticket.title }}</h5>
+    <p class="card-text">Description : {{ post.ticket.description }}</p>
+    <p class="card-text"><small class="text-muted">Created by {{ post.ticket.user }} - {{ post.ticket.time_created }}</small></p>
+
+
+
   </div>
 </div>
 

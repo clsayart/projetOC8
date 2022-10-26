@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from authentication.models import User
 from itertools import chain
-from django.db.models import CharField, Value
+from django.db.models import CharField, Value, Case, When
 
 from . import forms, models
 
@@ -217,8 +217,44 @@ def get_users_viewable_reviews3(user_id):
 def get_users_viewable_tickets1(user_id):
     # TICKETS DU USER
     tickets1 = models.Ticket.objects.filter(user=user_id)
-    print("tickets du user", tickets1)
-    return tickets1
+    print("tickets1 - 1", tickets1)
+
+    # REVIEWS A CES TICKETS
+    reviews_tickets = Review.objects.filter(ticket__in=tickets1)
+    print("reviews_tickets", reviews_tickets)
+    for review in reviews_tickets:
+        print("Title-review", review.headline, "Title-ticket", review.ticket.title,
+              "User-review", review.user, "User-ticket", review.ticket.user)
+
+    # LISTE DES TICKETS QUI ONT UN REVIEW
+    tickets_with_reviews = []
+    for review in reviews_tickets:
+        tickets_with_reviews.append(review.ticket)
+    print("tickets_with_reviews", tickets_with_reviews)
+    clean_list_tickets_with_reviews = list(dict.fromkeys(tickets_with_reviews))
+    print("clean_list", clean_list_tickets_with_reviews)
+    list_of_pk = []
+    for ticket in clean_list_tickets_with_reviews:
+        list_of_pk.append(ticket.pk)
+    print("list_of_pk", list_of_pk)
+    preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(list_of_pk)])
+    tickets_with_reviews = Ticket.objects.filter(pk__in=list_of_pk).order_by(preserved)
+    print("query1-1", tickets_with_reviews)
+
+    # LISTE DES TICKETS SANS REVIEW
+    list_tickets1 = list(tickets1)
+    print("liste tickets1", list_tickets1)
+    tickets_without_reviews = [i for i in list_tickets1 if i not in clean_list_tickets_with_reviews]
+    clean_list_tickets_without_reviews = list(dict.fromkeys(tickets_without_reviews))
+    print("tickets1 - 2", clean_list_tickets_without_reviews)
+    list_of_pk_2 = []
+    for ticket in clean_list_tickets_without_reviews:
+        list_of_pk_2.append(ticket.pk)
+    print("list_of_pk_2", list_of_pk_2)
+    preserved2 = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(list_of_pk_2)])
+    tickets_without_reviews_query = Ticket.objects.filter(pk__in=list_of_pk_2).order_by(preserved2)
+    print("query1-2", tickets_without_reviews_query)
+    return tickets_with_reviews, tickets_without_reviews_query
 
 
 def get_users_viewable_tickets2(user_id):
@@ -228,11 +264,51 @@ def get_users_viewable_tickets2(user_id):
     for i in following:
         followed_users.append(i.followed_user)
     tickets2 = Ticket.objects.filter(user__in=followed_users)
-    print("tickets du follow", tickets2)
-    return tickets2
+    print("tickets du follow (tickets2)", tickets2)
+
+    # REVIEWS A CES TICKETS
+    reviews_tickets_2 = Review.objects.filter(ticket__in=tickets2)
+    print("reviews_tickets", reviews_tickets_2)
+    for review in reviews_tickets_2:
+        print("Title-review", review.headline, "Title-ticket", review.ticket.title,
+              "User-review", review.user, "User-ticket", review.ticket.user)
+
+    # LISTE DES TICKETS QUI ONT UN REVIEW
+    tickets_with_reviews_2 = []
+    for review in reviews_tickets_2:
+        tickets_with_reviews_2.append(review.ticket)
+    print("tickets_with_reviews_2", tickets_with_reviews_2)
+    clean_list_tickets_with_reviews_2 = list(dict.fromkeys(tickets_with_reviews_2))
+    print("clean_list_2", clean_list_tickets_with_reviews_2)
+    list_of_pk_1_2 = []
+    for ticket in clean_list_tickets_with_reviews_2:
+        list_of_pk_1_2.append(ticket.pk)
+    print("list_of_pk", list_of_pk_1_2)
+    preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(list_of_pk_1_2)])
+    tickets_with_reviews_2 = Ticket.objects.filter(pk__in=list_of_pk_1_2).order_by(preserved)
+    print("query2-1", tickets_with_reviews_2)
+
+    # LISTE DES TICKETS SANS REVIEW
+    list_tickets2 = list(tickets2)
+    print("liste tickets2", list_tickets2)
+
+    tickets_without_reviews_2 = [i for i in list_tickets2 if i not in clean_list_tickets_with_reviews_2]
+    print("tickets2 - 2", tickets_without_reviews_2)
+
+    clean_list_tickets_without_reviews_2 = list(dict.fromkeys(tickets_without_reviews_2))
+    print("tickets1 - 2", clean_list_tickets_without_reviews_2)
+    list_of_pk_2_2 = []
+    for ticket in clean_list_tickets_without_reviews_2:
+        list_of_pk_2_2 .append(ticket.pk)
+    print("list_of_pk_2", list_of_pk_2_2 )
+    preserved2 = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(list_of_pk_2_2 )])
+    tickets_without_reviews_query_2 = Ticket.objects.filter(pk__in=list_of_pk_2_2 ).order_by(preserved2)
+    print("query2-2", tickets_without_reviews_query_2)
+    return tickets_with_reviews_2, tickets_without_reviews_query_2
 
 
 def feed(request):
+    print("feed")
     reviews1 = get_users_viewable_reviews1(request.user)
     reviews2 = get_users_viewable_reviews2(request.user)
     reviews3 = get_users_viewable_reviews3(request.user)
@@ -241,18 +317,40 @@ def feed(request):
     reviews2 = reviews2.annotate(content_type=Value('REVIEW', CharField()))
     reviews3 = reviews3.annotate(content_type=Value('REVIEW', CharField()))
 
-    tickets1 = get_users_viewable_tickets1(request.user)
-    tickets2 = get_users_viewable_tickets2(request.user)
+    tickets1_with_reviews = get_users_viewable_tickets1(request.user)[0]
+    print("feed tickets1_with_reviews", tickets1_with_reviews)
+    tickets1_without_reviews = get_users_viewable_tickets1(request.user)[1]
+    tickets2_with_reviews = get_users_viewable_tickets2(request.user)[0]
+    tickets2_without_reviews = get_users_viewable_tickets1(request.user)[1]
     # returns queryset of tickets
-    tickets1 = tickets1.annotate(content_type=Value('TICKET', CharField()))
-    tickets2 = tickets2.annotate(content_type=Value('TICKET', CharField()))
+    tickets1_with_reviews = tickets1_with_reviews.annotate(content_type=Value('TICKET_WITH_REVIEW', CharField()))
+    tickets1_without_reviews = tickets1_without_reviews.annotate(
+        content_type=Value('TICKET_WITHOUT_REVIEW', CharField()))
+    tickets2_with_reviews = tickets2_with_reviews.annotate(content_type=Value('TICKET_WITH_REVIEW', CharField()))
+    tickets2_without_reviews = tickets2_without_reviews.annotate(
+        content_type=Value('TICKET_WITHOUT_REVIEW', CharField()))
+
+    test_tickets = list(tickets1_with_reviews) + list(tickets1_without_reviews) + \
+                   list(tickets2_with_reviews) + list(tickets2_without_reviews)
+    print("test_tickets", test_tickets)
+    clean_tickets = list(dict.fromkeys(test_tickets))
+    print("clean_tickets", clean_tickets)
+
+    test_reviews = list(reviews1) + list(reviews2) + list(reviews3)
+    print("test_reviews", test_reviews)
+    clean_reviews = list(dict.fromkeys(test_reviews))
+    print("clean_reviews", clean_reviews)
 
     # combine and sort the two types of posts
     posts = sorted(
-        chain(reviews1, reviews2, reviews3, tickets1, tickets2),
+        chain(clean_reviews, clean_tickets),
         key=lambda post: post.time_created,
         reverse=True
     )
     # print('posts', posts)
     return render(request, 'litreview/feed.html',
                   context={'posts': posts, 'max_rating': range(5)})
+
+# if review sur ce ticket ne pas mettre bouton
+# aller chercher ticket puis review si review affiché si non, bouton
+# review where ticket est dans tickets

@@ -11,8 +11,10 @@
   <div class="row">
 {% for post in posts %}
 <div id="feed_post">
-    {% if post.content_type == 'TICKET' %}
-        {% include 'litreview/ticket_snippet.html' %}
+    {% if post.content_type == 'TICKET_WITH_REVIEW' %}
+        {% include 'litreview/ticket_snippet1.html' %}
+    {% elif post.content_type == 'TICKET_WITHOUT_REVIEW' %}
+        {% include 'litreview/ticket_snippet2.html' %}
     {% elif post.content_type == 'REVIEW' %}
         {% include 'litreview/review_snippet.html' %}
 {% endif %}
